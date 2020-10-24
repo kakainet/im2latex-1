@@ -71,7 +71,9 @@ class Vocab:
                 self.end_token = vocab.end_token
                 self.frequency = vocab.frequency
                 self.total = vocab.total
+                print(f'tokeny {self.token2idx}')
         except:
+            print('yyyy')
             self.build()
 
     def formulas2tensor(self, formulas, max_len):
