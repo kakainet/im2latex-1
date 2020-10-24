@@ -5,12 +5,12 @@ config = {
     #        pathes
     # ======================
 
-    'formulas_train_path' : '',
-    'formulas_validation_path' : '',
-    'formulas_test_path' : '',
-    'images_train_path' : '',
-    'images_validation_path' : '',
-    'images_test_path' : '',
+    'formulas_train_path' : 'train.txt',
+    'formulas_validation_path' : 'validate.txt',
+    'formulas_test_path' : 'test.txt',
+    'images_train_path' : 'train_imgs',
+    'images_validation_path' : 'val_imgs',
+    'images_test_path' : 'test_imgs',
 
     'checkpoints_dir' : 'checkpoints/',
 
