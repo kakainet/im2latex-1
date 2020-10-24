@@ -142,7 +142,7 @@ def evaluate(evalset, config, checkpoint=None):
     logger(edit_message)
 
 def bleu_and_edit_distance(predictions, predicted_path, target_path):
-    with open(predicted_path, 'w') as f:
+    with open(predicted_path, 'w+') as f:
         for pred in predictions:
             f.write(pred+'\n')
     output = subprocess.check_output('python src/Evaluation/bleu_score.py --target-formulas {} --predicted-formulas {} --ngram 5'.
