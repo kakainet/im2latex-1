@@ -7,7 +7,7 @@ import argparse
 def get_trainer(config):
 
     vocab_config = {
-        'pathes' : [config['formulas_train_path'], config['formulas_validation_path']],
+        'pathes' : [config['formulas_train_path'], config['formulas_validation_path'], config['formulas_test_path']],
         'unk_token_threshold' : config['unk_token_threshold'],
     }
     vocab = utils.Vocab(vocab_config)
