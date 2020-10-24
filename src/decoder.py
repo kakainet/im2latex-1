@@ -16,7 +16,7 @@ class BahdanauAttention(nn.Module):
     def score(self, query, keys):
         query = self.query_layer(query) # (batch, 1, hidden_size)
         keys = self.memory_layer(keys) # (batch, time, hidden_size)
-        alignments = self.alignment_layer(F.tanh(query + keys)) # (batch, time, 1)
+        alignments = self.alignment_layer(torch.tanh(query + keys)) # (batch, time, 1)
         return alignments
 
     def forward(self, query, keys):
@@ -55,7 +55,7 @@ class AttnDecoder(nn.Module):
         # context -> (batch, 1, hidden_size)
         # attn_weights -> (batch, 1, time)
         o_input = torch.cat([hidden.squeeze(1), context.squeeze(1)], dim=1) # (batch, 2*hidden_size)
-        on = F.tanh(self.o(o_input))
+        on = torch.tanh(self.o(o_input))
         # next_o -> (batch, hidden_size)
         output = F.log_softmax(self.out(on), dim=1)
         # output: log softmax of symbol scores -> (batch, output_size)

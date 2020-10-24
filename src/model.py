@@ -101,10 +101,10 @@ class Model(nn.Module):
         encoder_outputs = encoder_outputs.view(b, h*w, -1).contiguous() # (batch, H'*W', directions * encoder_hidden_size)
         encoder_outputs = self.add_positional_embedding(encoder_outputs) # (batch, H'*W', directions * encoder_hidden_size)
 
-        hn = F.tanh(self.init_h(torch.mean(encoder_outputs, dim=1))) # (batch, decoder_hidden_size)
+        hn = torch.tanh(self.init_h(torch.mean(encoder_outputs, dim=1))) # (batch, decoder_hidden_size)
         hn = hn.view(1, hn.shape[0], hn.shape[1]).contiguous() # (1, batch, decoder_hidden_size)
         cn = torch.zeros(1, b, self.decoder.hidden_size, device=self.device) # (1, batch, decoder_hidden_size)
-        on = F.tanh(self.init_o(torch.mean(encoder_outputs, dim=1))) # (batch, decoder_hidden_size)
+        on = torch.tanh(self.init_o(torch.mean(encoder_outputs, dim=1))) # (batch, decoder_hidden_size)
 
         next_token = y[:, 0] # (batch)
         logits = torch.zeros(y.shape[0], y.shape[1], self.decoder.output_size, device=self.device) # (batch, len, vocab_size)
@@ -136,10 +136,10 @@ class Model(nn.Module):
         encoder_outputs = encoder_outputs.view(b, h*w, -1)
         encoder_outputs = self.add_positional_embedding(encoder_outputs) # (batch, H'*W', directions * encoder_hidden_size)
 
-        hn = F.tanh(self.init_h(torch.mean(encoder_outputs, dim=1))) # (batch, decoder_hidden_size)
+        hn = torch.tanh(self.init_h(torch.mean(encoder_outputs, dim=1))) # (batch, decoder_hidden_size)
         hn = hn.view(1, hn.shape[0], hn.shape[1]).contiguous() # (1, batch, decoder_hidden_size)
         cn = torch.zeros(1, b, self.decoder.hidden_size, device=self.device) # (1, batch, decoder_hidden_size)
-        on = F.tanh(self.init_o(torch.mean(encoder_outputs, dim=1))) # (batch, decoder_hidden_size)
+        on = torch.tanh(self.init_o(torch.mean(encoder_outputs, dim=1))) # (batch, decoder_hidden_size)
 
         if method == 'greedy':
             generator = GreedyDecoder(self, max_len, hn, cn, on, encoder_outputs, self.device)
