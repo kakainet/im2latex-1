@@ -37,7 +37,7 @@ def main(args):
 
     target_formulas = open(target_formulas_file).readlines()
     predicted_formulas = open(predicted_formulas_file).readlines()
-    print('BLEU PREDICTED FORMULAS TEST', predicted_formulas)
+    #print('BLEU PREDICTED FORMULAS TEST', predicted_formulas)
     i = 0
 
     total_bleu_score = 0
