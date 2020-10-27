@@ -29,7 +29,7 @@ class Trainer:
             'log_dir' : config['log_dir'],
             'timezone' : 'Iran',
         }
-        self.logger = Logger(logger_config)
+        self.logger = utils.Logger(logger_config)
 
         self.clip = config['clip']
 
@@ -53,7 +53,7 @@ class Trainer:
         predictions = []
         while not epoch_ended:
             x_train, y_train, epoch_ended = self.train_loader.get_next_batch()
-            x_train = torch.from_numpy(x_train).float().to(self.device)
+            x_train = x_train.to(self.device)
             y_train = torch.from_numpy(y_train).long().to(self.device)
             self.optimizer.zero_grad()
             logits = self.model(x_train, y_train, self.teacher_forcing_ratio)
@@ -100,7 +100,7 @@ class Trainer:
                     y_eval = torch.from_numpy(y_eval).long().to(self.device)
                 else:
                     x_eval, epoch_ended = eval_loader.get_next_batch()
-                x_eval = torch.from_numpy(x_eval).float().to(self.device)
+                x_eval = x_eval.to(self.device)
                 if eval_loader.has_label:
                     max_len = y_eval.shape[1]
                 preds, logits, attn_weights = self.model.generate(x_eval, start_token, max_len, method)
@@ -136,8 +136,8 @@ class Trainer:
         self.logger('Epoch {} saved.'.format(epoch))
         return os.path.join(self.checkpoints_dir, self.checkpoint_name(epoch))
 
-    def load(self, checkpoint_name):
-        checkpoint = torch.load(checkpoint_name)
+    def load(self, checkpoint_name, cpu=False):
+        checkpoint = torch.load(checkpoint_name, map_location=torch.device('cpu') if cpu else None)
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
