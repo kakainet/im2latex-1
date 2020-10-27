@@ -173,10 +173,10 @@ class data_loader:
             batch_imgs.append(img)
             
             end_of_epoch = self.move_cursor()
-            if self.has_label:
-                return torch.stack(batch_imgs), batch_formulas_tensor, end_of_epoch
-            else:
-                return torch.stack(batch_imgs), end_of_epoch
+        if self.has_label:
+            return torch.stack(batch_imgs), batch_formulas_tensor, end_of_epoch
+        else:
+            return torch.stack(batch_imgs), end_of_epoch
 
     def move_cursor(self):
         self.cursor += 1
