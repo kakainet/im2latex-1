@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 import datetime, pytz
 from torchvision import transforms
+from PIL import Image
 
 class Vocab:
     def __init__(self, config):
