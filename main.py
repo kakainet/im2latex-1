@@ -13,9 +13,9 @@ def get_trainer(config):
     vocab = utils.Vocab(vocab_config)
     vocab_size = len(vocab.token2idx.keys())
 
-    cnn_model = cnn.CNN(config['cnn_params']).to(config['device'])
+    cnn_model = CNN(config['cnn_params']).to(config['device'])
 
-    encoder_model = encoder.Encoder(config['cnn_params']['conv6_c'], config['encoder_hidden_size'],
+    encoder_model = Encoder(config['cnn_params']['conv6_c'], config['encoder_hidden_size'],
                                     config['bidirectional'], config['device']).to(config['device'])
 
     train_loader_config = {
@@ -25,15 +25,15 @@ def get_trainer(config):
         'sort_by_formulas_len' : True,
         'shuffle' : False,
     }
-    train_loader = utils.data_loader(vocab, train_loader_config)
+    train_loader = utils.data_loader(vocab, train_loader_config, train=True)
 
-    embedding_model = embedding.Embedding(vocab_size, config['embedding_size'], vocab.pad_token).to(config['device'])
+    embedding_model = Embedding(vocab_size, config['embedding_size'], vocab.pad_token).to(config['device'])
 
-    decoder_model = decoder.AttnDecoder(config['embedding_size'], config['decoder_hidden_size'],
+    decoder_model = AttnDecoder(config['embedding_size'], config['decoder_hidden_size'],
                                         config['encoder_hidden_size']*(2 if config['bidirectional'] else 1), vocab_size,
                                         config['device']).to(config['device'])
 
-    _model = model.Model(cnn_model, encoder_model, embedding_model, decoder_model, config['device'])
+    _model = Model(cnn_model, encoder_model, embedding_model, decoder_model, config['device'])
 
     trainer_config = {
         'device' : config['device'],
@@ -51,7 +51,7 @@ def get_trainer(config):
         'teacher_forcing_ratio_min': config['teacher_forcing_ratio_min'],
     }
 
-    _trainer = trainer.Trainer(_model, train_loader, trainer_config)
+    _trainer = Trainer(_model, train_loader, trainer_config)
 
     return _trainer
 
