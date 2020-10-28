@@ -62,7 +62,7 @@ def train(config):
         'log_dir' : config['log_dir'],
         'timezone' : 'UTC',
     }
-    logger = Logger(logger_config)
+    logger = utils.Logger(logger_config)
 
     _trainer = get_trainer(config)
 
