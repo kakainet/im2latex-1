@@ -51,7 +51,7 @@ def get_trainer(config):
         'teacher_forcing_ratio_min': config['teacher_forcing_ratio_min'],
     }
 
-    _trainer = Trainer(_model, train_loader, trainer_config)
+    _trainer = trainer.Trainer(_model, train_loader, trainer_config)
 
     return _trainer
 
