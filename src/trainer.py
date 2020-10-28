@@ -29,7 +29,7 @@ class Trainer:
             'log_dir' : config['log_dir'],
             'timezone' : 'Iran',
         }
-        self.logger = utils.Logger(logger_config)
+        self.logger = Logger(logger_config)
 
         self.clip = config['clip']
 
