@@ -7,6 +7,8 @@ import sys
 import cv2
 import numpy as np
 import datetime, pytz
+from torchvision import transforms
+from PIL import Image
 
 class Vocab:
     def __init__(self, config):
@@ -105,7 +107,7 @@ class Vocab:
             return s
 
 class data_loader:
-    def __init__(self, vocab, config):
+    def __init__(self, vocab, config, train=False):
         '''
             config: vocab, batch_size, images_path, formulas_path=None, sort_by_formulas_len=False, shuffle=False):
         '''
@@ -136,6 +138,23 @@ class data_loader:
                 idx = np.random.permutation(len(self.formulas))
                 self.formulas = [self.formulas[i] for i in idx]
                 self.images = [self.images[i] for i in idx]
+            if train:
+                self.data_transforms = transforms.Compose([
+                    transforms.Grayscale(num_output_channels=1),
+                    transforms.RandomAffine(
+                        degrees=5,
+                        translate=(0.1, 0.1),
+                        scale=(0.2, 1.1),
+                        fillcolor=255
+                    ),
+                    transforms.ColorJitter(brightness=0.03, saturation=0.03),
+                    transforms.ToTensor()
+                ])
+            else:
+                self.data_transforms = transforms.Compose([
+                    transforms.Grayscale(num_output_channels=1),
+                    transforms.ToTensor()                            
+                ])
 
     def get_next_batch(self):
         current_batch_size = min(self.batch_size, len(self.images)-self.cursor)
@@ -150,15 +169,15 @@ class data_loader:
             batch_formulas_tensor = self.vocab.formulas2tensor(self.formulas[self.cursor:self.cursor+current_batch_size], max_batch_len)
         batch_imgs = []
         for i in range(current_batch_size):
-            img = cv2.imread(self.images[self.cursor], cv2.IMREAD_GRAYSCALE)
-            img = np.reshape(img, (1, img.shape[0], img.shape[1]))
-            img = self.normalize(img)
+            img = Image.open(self.images[self.cursor])
+            img = self.data_transforms(img)
             batch_imgs.append(img)
+            
             end_of_epoch = self.move_cursor()
         if self.has_label:
-            return np.array(batch_imgs), batch_formulas_tensor, end_of_epoch
+            return torch.stack(batch_imgs), batch_formulas_tensor, end_of_epoch
         else:
-            return np.array(batch_imgs), end_of_epoch
+            return torch.stack(batch_imgs), end_of_epoch
 
     def move_cursor(self):
         self.cursor += 1
@@ -166,9 +185,6 @@ class data_loader:
             self.reset_cursor()
             return True
         return False
-
-    def normalize(self, image):
-        return (image / 255.) * 2 - 1
 
     def reset_cursor(self):
         self.cursor = 0

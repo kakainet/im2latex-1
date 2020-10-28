@@ -25,7 +25,7 @@ def get_trainer(config):
         'sort_by_formulas_len' : True,
         'shuffle' : False,
     }
-    train_loader = utils.data_loader(vocab, train_loader_config)
+    train_loader = utils.data_loader(vocab, train_loader_config, train=True)
 
     embedding_model = embedding.Embedding(vocab_size, config['embedding_size'], vocab.pad_token).to(config['device'])
 
